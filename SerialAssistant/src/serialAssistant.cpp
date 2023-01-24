@@ -14,6 +14,8 @@ serialAssistant::serialAssistant(QWidget* parent)
     , ui(new Ui_serialAssistant)
 {
     ui->setupUi(this);
+    //初始化串口打开标志位位零
+    openSerialflag = false;
     //实例化串口
     serialPort = new QSerialPort(this);
     //搜索当前串口数据，将当前搜索到的串口数据添加到serialName中
@@ -23,6 +25,9 @@ serialAssistant::serialAssistant(QWidget* parent)
         serialNamePort << info.portName();
     }
     ui->serialPortCb->addItems(serialNamePort);
+
+    //获取当前时间
+    curTime = QTime::currentTime();
 
     //连接开关按键
     connect(ui->openSerialPbt, SIGNAL(clicked()), this, SLOT(openSerial_clicked()));
@@ -99,22 +104,40 @@ void serialAssistant::openSerial_clicked(void)
 
     //输出状态
     qDebug("open seial port");
+    //获取当前时间
+    curTime = QTime::currentTime();
     //判断串口是否打开成功
     if (serialPort->open(QIODevice::ReadWrite) == true)
     {
-        QMessageBox::information(this, "output", "successful");
+        ui->recvEdit->appendPlainText(curTime.toString() + " " + "serial port connect successful, serial port name is " + ui->serialPortCb->currentText());
+        
+        // QMessageBox::information(this, "output", "successful");
         qDebug("open serial port successful");
+        //串口打开标准位置true 
+        openSerialflag = true;
     }
     else
     {
-        QMessageBox::critical(this, "output", "fail");
+        ui->recvEdit->appendPlainText(curTime.toString() + " " + "serial port connect fail");
+        // QMessageBox::critical(this, "output", "fail");
         qDebug("open serila port fail");
+        
     }
 }
 
 void serialAssistant::closeSerial_clicked(void)
 {
+    
     serialPort->close();
+    //获取当前时间
+    curTime = QTime::currentTime();
+    //判断串口是否打开过,并输出信息
+    if(openSerialflag  == true)
+    {
+        //输出关闭串口信息
+        ui->recvEdit->appendPlainText(curTime.toString() + "close serial port");
+    }
+
     qDebug("close serial port");
 }
 
@@ -128,12 +151,14 @@ void serialAssistant::serialPortReadyRead_slot(void)
 {
     QString buf;
     buf = QString(serialPort->readAll());
-    ui->recvEdit->appendPlainText(buf);
+    ui->recvEdit->appendPlainText(curTime.toString() + " " +  buf);
     qDebug("receive message");
 }
 
 void serialAssistant::sendSerial(void)
 {
+    //获取当前时间
+    curTime = QTime::currentTime();
     serialPort->write(ui->sendMessageEdit->text().toLocal8Bit().data());
     qDebug("send serial message");
 }

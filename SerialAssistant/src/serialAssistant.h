@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QSerialPort>
 #include <QChart>
+#include <QTime>
 class serialAssistant : public QMainWindow {
     Q_OBJECT
     
@@ -26,5 +27,10 @@ private:
     Ui_serialAssistant* ui;
     //串口
     QSerialPort* serialPort;
+    //时间
+    QTime curTime;
+
+private:
+    bool openSerialflag;//串口打开标志位
 
 };

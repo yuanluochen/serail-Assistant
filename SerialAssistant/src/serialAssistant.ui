@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
+    <width>943</width>
     <height>602</height>
    </rect>
   </property>
@@ -21,7 +21,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="serialDataTab">
        <attribute name="title">
@@ -451,6 +451,16 @@
        <attribute name="title">
         <string>Charts</string>
        </attribute>
+       <widget class="QGraphicsView" name="graphicsView">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>701</width>
+          <height>441</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -461,7 +471,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
+     <width>943</width>
      <height>25</height>
     </rect>
    </property>
