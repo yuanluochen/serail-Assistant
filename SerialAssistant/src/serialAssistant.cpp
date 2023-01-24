@@ -18,8 +18,8 @@ serialAssistant::serialAssistant(QWidget* parent)
     openSerialflag = false;
     //实例化串口
     serialPort = new QSerialPort(this);
-    //搜索当前串口数据，将当前搜索到的串口数据添加到serialName中
     QStringList serialNamePort;
+    //搜索当前串口数据，将当前搜索到的串口数据添加到serialName中
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
     {
         serialNamePort << info.portName();
@@ -39,6 +39,8 @@ serialAssistant::serialAssistant(QWidget* parent)
     connect(ui->sendMessagePbt, SIGNAL(clicked()), this, SLOT(sendSerial()));
     //连接接收槽函数
     connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialPortReadyRead_slot()));
+    //连接搜索开关
+    connect(ui->searchSearchportPbt, SIGNAL(clicked()), this, SLOT(searchSerialPort_clicked()));
 
 }
 
@@ -74,7 +76,6 @@ void serialAssistant::openSerial_clicked(void)
     {
         dataBits = QSerialPort::Data8;
     }
-    
     //设置停止位
     if (ui->stopBitCB->currentText() == "1")
     {
@@ -88,20 +89,17 @@ void serialAssistant::openSerial_clicked(void)
     {
         stopBits = QSerialPort::TwoStop;
     }
-
     //设置校验位
     if (ui->ParityCb->currentText() == "none")
     {
         parity = QSerialPort::NoParity;
     }
-
     //赋值串口号
     serialPort->setPortName(ui->serialPortCb->currentText());
     serialPort->setBaudRate(baudRate);
     serialPort->setDataBits(dataBits);
     serialPort->setStopBits(stopBits);
     serialPort->setParity(parity);
-
     //输出状态
     qDebug("open seial port");
     //获取当前时间
@@ -121,10 +119,8 @@ void serialAssistant::openSerial_clicked(void)
         ui->recvEdit->appendPlainText(curTime.toString() + " " + "serial port connect fail");
         // QMessageBox::critical(this, "output", "fail");
         qDebug("open serila port fail");
-        
     }
 }
-
 void serialAssistant::closeSerial_clicked(void)
 {
     
@@ -140,13 +136,11 @@ void serialAssistant::closeSerial_clicked(void)
 
     qDebug("close serial port");
 }
-
 void serialAssistant::clearSerial_clicked(void)
 {
     ui->recvEdit->clear();
     qDebug("clear output edit");
 }
-
 void serialAssistant::serialPortReadyRead_slot(void)
 {
     QString buf;
@@ -159,10 +153,25 @@ void serialAssistant::sendSerial(void)
 {
     //获取当前时间
     curTime = QTime::currentTime();
-    serialPort->write(ui->sendMessageEdit->text().toLocal8Bit().data());
+    serialPort->write((ui->beginMessageEdit->text() + ui->sendMessageEdit->text() + ui->endMessageEdit->text()).toLocal8Bit().data());
     qDebug("send serial message");
 }
 
+void serialAssistant::searchSerialPort_clicked(void)
+{
+    qDebug("search serial port");
+    //获取当前时间
+    curTime = QTime::currentTime();
+    //汇报输出
+    ui->recvEdit->appendPlainText(curTime.toString() + " search serial port");
+    QStringList serialNamePort;
+    //搜索当前串口数据，将当前搜索到的串口数据添加到serialName中
+    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
+    {
+        serialNamePort << info.portName();
+    }
+    ui->serialPortCb->addItems(serialNamePort);
+}
 
 serialAssistant::~serialAssistant()
 {

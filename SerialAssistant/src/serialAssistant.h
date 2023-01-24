@@ -18,6 +18,8 @@ private slots:
     void closeSerial_clicked(void);
     //显示数据清除
     void clearSerial_clicked(void);
+    //搜索串口
+    void searchSerialPort_clicked(void);
     //串口接收并显示到界面上
     void serialPortReadyRead_slot(void);
     //串口数据接收
