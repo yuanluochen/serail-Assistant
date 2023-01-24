@@ -1,5 +1,4 @@
 #include "serialAssistant.h"
-#include "serialcharts.h"
 #include <QToolBar>
 #include <QSerialPortInfo>
 #include <QString>
@@ -15,32 +14,6 @@ serialAssistant::serialAssistant(QWidget* parent)
     , ui(new Ui_serialAssistant)
 {
     ui->setupUi(this);
-    //实例化工具栏
-    QToolBar* toolBar = new QToolBar(this);
-    //在左侧添加工具栏
-    addToolBar(Qt::LeftToolBarArea, toolBar);
-    //添加工具栏
-    //向工具栏中添加按键
-    // //实例化串口助手按键对象
-    // QPushButton* serialDatapbt = new QPushButton("Serial Data", this);
-    // //添加串口数据图标
-    // toolBar->addWidget(serialDatapbt);
-    //添加标签
-    QLabel* serialLabel = new QLabel("Serial Tool");
-    serialLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-    toolBar->addWidget(serialLabel);
-    toolBar->addSeparator();
-
-    //实例化图表按键对象
-    QPushButton* chartsPbt = new QPushButton("Charts", this);
-    //添加图表控件
-    toolBar->addWidget(chartsPbt);
-    //禁止浮动
-    toolBar->setFloatable(false);
-    //禁止移动
-    toolBar->setMovable(false);
-
-    
     //实例化串口
     serialPort = new QSerialPort(this);
     //搜索当前串口数据，将当前搜索到的串口数据添加到serialName中
@@ -61,8 +34,6 @@ serialAssistant::serialAssistant(QWidget* parent)
     connect(ui->sendMessagePbt, SIGNAL(clicked()), this, SLOT(sendSerial()));
     //连接接收槽函数
     connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialPortReadyRead_slot()));
-    //连接到图表按键
-    connect(chartsPbt, SIGNAL(clicked()), this, SLOT(openCharts_clicked()));
 
 }
 
@@ -165,16 +136,6 @@ void serialAssistant::sendSerial(void)
 {
     serialPort->write(ui->sendMessageEdit->text().toLocal8Bit().data());
     qDebug("send serial message");
-}
-
-void serialAssistant::openCharts_clicked(void)
-{
-    //实例化数据图表界面
-    SerialCharts* dataCharts = new SerialCharts; 
-    dataCharts->setGeometry(this->geometry());
-    //显示图形化
-    dataCharts->show();
-
 }
 
 

@@ -21,10 +21,6 @@ private slots:
     void serialPortReadyRead_slot(void);
     //串口数据接收
     void sendSerial(void);
-    
-    //图表切换按键
-    void openCharts_clicked(void);
-
 
 private:
     Ui_serialAssistant* ui;

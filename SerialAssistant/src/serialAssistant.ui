@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>743</width>
+    <width>900</width>
     <height>602</height>
    </rect>
   </property>
@@ -21,11 +21,11 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="serialDataTab">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>Serial Data</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
@@ -68,7 +68,7 @@
              <widget class="QPlainTextEdit" name="recvEdit">
               <property name="minimumSize">
                <size>
-                <width>500</width>
+                <width>700</width>
                 <height>445</height>
                </size>
               </property>
@@ -83,6 +83,12 @@
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
              <widget class="QGroupBox" name="groupBox">
+              <property name="maximumSize">
+               <size>
+                <width>162</width>
+                <height>64</height>
+               </size>
+              </property>
               <property name="title">
                <string/>
               </property>
@@ -156,10 +162,23 @@
             <item>
              <layout class="QGridLayout" name="gridLayout">
               <item row="0" column="0">
-               <widget class="QComboBox" name="serialPortCb"/>
+               <widget class="QComboBox" name="serialPortCb">
+                <property name="maximumSize">
+                 <size>
+                  <width>86</width>
+                  <height>25</height>
+                 </size>
+                </property>
+               </widget>
               </item>
               <item row="0" column="1">
                <widget class="QLabel" name="label">
+                <property name="maximumSize">
+                 <size>
+                  <width>68</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>SerialPort</string>
                 </property>
@@ -170,6 +189,12 @@
               </item>
               <item row="1" column="0">
                <widget class="QComboBox" name="baudRateCb">
+                <property name="maximumSize">
+                 <size>
+                  <width>86</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="currentIndex">
                  <number>2</number>
                 </property>
@@ -192,6 +217,12 @@
               </item>
               <item row="1" column="1">
                <widget class="QLabel" name="label_2">
+                <property name="maximumSize">
+                 <size>
+                  <width>68</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>BaudRate</string>
                 </property>
@@ -202,6 +233,12 @@
               </item>
               <item row="2" column="0">
                <widget class="QComboBox" name="dataBitCb">
+                <property name="maximumSize">
+                 <size>
+                  <width>86</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="toolTipDuration">
                  <number>-10</number>
                 </property>
@@ -222,6 +259,12 @@
               </item>
               <item row="2" column="1">
                <widget class="QLabel" name="label_3">
+                <property name="maximumSize">
+                 <size>
+                  <width>68</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>DataBits</string>
                 </property>
@@ -232,6 +275,12 @@
               </item>
               <item row="3" column="0">
                <widget class="QComboBox" name="stopBitCB">
+                <property name="maximumSize">
+                 <size>
+                  <width>86</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="currentIndex">
                  <number>0</number>
                 </property>
@@ -254,6 +303,12 @@
               </item>
               <item row="3" column="1">
                <widget class="QLabel" name="label_4">
+                <property name="maximumSize">
+                 <size>
+                  <width>68</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>StopBits</string>
                 </property>
@@ -264,6 +319,12 @@
               </item>
               <item row="4" column="0">
                <widget class="QComboBox" name="ParityCb">
+                <property name="maximumSize">
+                 <size>
+                  <width>86</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="currentIndex">
                  <number>0</number>
                 </property>
@@ -276,6 +337,12 @@
               </item>
               <item row="4" column="1">
                <widget class="QLabel" name="label_5">
+                <property name="maximumSize">
+                 <size>
+                  <width>68</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Parity</string>
                 </property>
@@ -322,6 +389,12 @@
                   <height>30</height>
                  </size>
                 </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>160</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Open Serial</string>
                 </property>
@@ -329,6 +402,12 @@
               </item>
               <item>
                <widget class="QPushButton" name="closeSerialPbt">
+                <property name="maximumSize">
+                 <size>
+                  <width>160</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Close Serial</string>
                 </property>
@@ -368,9 +447,9 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="chartsTab">
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>Charts</string>
        </attribute>
       </widget>
      </widget>
@@ -382,7 +461,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>743</width>
+     <width>900</width>
      <height>25</height>
     </rect>
    </property>
