@@ -4,6 +4,9 @@
 #include <QSerialPort>
 #include <QChart>
 #include <QTime>
+#include <QValueAxis>
+#include <qlineseries.h>
+
 class serialAssistant : public QMainWindow {
     Q_OBJECT
     
@@ -25,6 +28,9 @@ private slots:
     //串口数据接收
     void sendSerial(void);
 
+    //图表开启函数
+    void runSerialDataChart_clicked(void);
+
 private:
     Ui_serialAssistant* ui;
     //串口
@@ -32,7 +38,16 @@ private:
     //时间
     QTime curTime;
 
-private:
-    bool openSerialflag;//串口打开标志位
-
+    //图表
+    QChart* serialDataCharts;
+    //坐标轴
+    QValueAxis* chartAxisX;//x轴    
+    QValueAxis* chartAxisY;//y轴    
+    //线
+    QLineSeries* lineSeries;
+    //设置x轴y轴的起始大小
+    int xMin;
+    int yMin;
+    int xMax;
+    int yMax;
 };

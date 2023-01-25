@@ -8,14 +8,30 @@
 #include <QMessageBox>
 #include <QLabel>
 
+// 串口打开的按键状态
+#define PBT_OPEN_STATUS                             \
+    {                                               \
+        ui->openSerialPbt->setEnabled(false);       \
+        ui->searchSearchportPbt->setEnabled(false); \
+        ui->clearMessagePbt->setEnabled(true);      \
+        ui->closeSerialPbt->setEnabled(true);       \
+        ui->sendMessagePbt->setEnabled(true);       \
+    }
+// 串口关闭时的按键状态
+#define PBT_CLOSE_STATUS                           \
+    {                                              \
+        ui->openSerialPbt->setEnabled(true);       \
+        ui->searchSearchportPbt->setEnabled(true); \
+        ui->clearMessagePbt->setEnabled(true);     \
+        ui->closeSerialPbt->setEnabled(false);     \
+        ui->sendMessagePbt->setEnabled(false);     \
+    }
 
 serialAssistant::serialAssistant(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui_serialAssistant)
 {
     ui->setupUi(this);
-    //初始化串口打开标志位位零
-    openSerialflag = false;
     //实例化串口
     serialPort = new QSerialPort(this);
     QStringList serialNamePort;
@@ -28,6 +44,47 @@ serialAssistant::serialAssistant(QWidget* parent)
 
     //获取当前时间
     curTime = QTime::currentTime();
+    //设置按键状态
+    PBT_CLOSE_STATUS;
+
+    //初始化图表
+    //创建一个图表
+    serialDataCharts = new QChart();
+    //创建坐标轴
+    chartAxisX = new QValueAxis();
+    chartAxisY = new QValueAxis();
+    //设置标题
+    chartAxisX->setTitleText("time/s");
+    chartAxisY->setTitleText("value");
+    //设置标签
+    chartAxisX->setLabelFormat("%f");
+    chartAxisY->setLabelFormat("%f");
+    //向图表添加坐标轴
+    serialDataCharts->addAxis(chartAxisX, Qt::AlignBottom);
+    serialDataCharts->addAxis(chartAxisY, Qt::AlignLeft);
+    //设置图例标签
+    serialDataCharts->setTitle("Serial Real-Time Data");
+    //设置图例不显示
+    serialDataCharts->legend()->setVisible(false);
+    //实例化线
+    lineSeries = new QLineSeries(this);
+    //设置线的颜色,为蓝色
+    QPen pen(QColor(0x0000FF));
+    lineSeries->setPen(pen);
+    //向图表中添加线
+    serialDataCharts->addSeries(lineSeries);
+    //将曲线与坐标轴联系起来
+    lineSeries->attachAxis(chartAxisX);
+    lineSeries->attachAxis(chartAxisY);
+    //将图表放到图表视图中
+    ui->chartview->setChart(serialDataCharts);
+    //初始化x轴y轴的初始范围
+    xMin = 0;
+    xMax = 50;
+    yMin = 0;
+    yMax = 50;
+    chartAxisX->setRange(xMin, xMax);
+    chartAxisY->setRange(yMin, yMax);
 
     //连接开关按键
     connect(ui->openSerialPbt, SIGNAL(clicked()), this, SLOT(openSerial_clicked()));
@@ -41,7 +98,13 @@ serialAssistant::serialAssistant(QWidget* parent)
     connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialPortReadyRead_slot()));
     //连接搜索开关
     connect(ui->searchSearchportPbt, SIGNAL(clicked()), this, SLOT(searchSerialPort_clicked()));
+    //连接图表打开开关
+    connect(ui->runPbt, SIGNAL(clicked()), this, SLOT(runSerialDataChart_clicked()));
 
+}
+
+void serialAssistant::runSerialDataChart_clicked(void)
+{
 }
 
 void serialAssistant::openSerial_clicked(void)
@@ -111,8 +174,8 @@ void serialAssistant::openSerial_clicked(void)
         
         // QMessageBox::information(this, "output", "successful");
         qDebug("open serial port successful");
-        //串口打开标准位置true 
-        openSerialflag = true;
+        //设置按键状态
+        PBT_OPEN_STATUS;
     }
     else
     {
@@ -123,17 +186,13 @@ void serialAssistant::openSerial_clicked(void)
 }
 void serialAssistant::closeSerial_clicked(void)
 {
-    
     serialPort->close();
+    //设置按键状态
+    PBT_CLOSE_STATUS;
     //获取当前时间
     curTime = QTime::currentTime();
-    //判断串口是否打开过,并输出信息
-    if(openSerialflag  == true)
-    {
-        //输出关闭串口信息
-        ui->recvEdit->appendPlainText(curTime.toString() + "close serial port");
-    }
-
+    // 输出关闭串口信息
+    ui->recvEdit->appendPlainText(curTime.toString() + "close serial port");
     qDebug("close serial port");
 }
 void serialAssistant::clearSerial_clicked(void)
