@@ -8,6 +8,17 @@
 #include <QMessageBox>
 #include <QLabel>
 
+#define INIT_CHART_AXIS_RANGE             \
+    {                                     \
+        lineSeries->clear();              \
+        xMin = 0;                         \
+        xMax = 50;                        \
+        yMin = 0;                         \
+        yMax = 50;                        \
+        chartAxisX->setRange(xMin, xMax); \
+        chartAxisY->setRange(yMin, yMax); \
+    }
+
 // 串口打开的按键状态
 #define PBT_OPEN_STATUS                             \
     {                                               \
@@ -44,8 +55,8 @@ serialAssistant::serialAssistant(QWidget* parent)
 
     //获取当前时间
     curTime = QTime::currentTime();
-    //设置按键状态
-    PBT_CLOSE_STATUS;
+    //初始化串口状态
+    serialStatus = false;
 
     //初始化图表
     //创建一个图表
@@ -78,14 +89,13 @@ serialAssistant::serialAssistant(QWidget* parent)
     lineSeries->attachAxis(chartAxisY);
     //将图表放到图表视图中
     ui->chartview->setChart(serialDataCharts);
-    //初始化x轴y轴的初始范围
-    xMin = 0;
-    xMax = 50;
-    yMin = 0;
-    yMax = 50;
-    chartAxisX->setRange(xMin, xMax);
-    chartAxisY->setRange(yMin, yMax);
-
+    //初始化图表数据
+    INIT_CHART_AXIS_RANGE;
+    //设置串口按键状态
+    PBT_CLOSE_STATUS;
+    //设置图表按键状态
+    ui->runPbt->setEnabled(true);
+    ui->stopPbt->setEnabled(false);
     //连接开关按键
     connect(ui->openSerialPbt, SIGNAL(clicked()), this, SLOT(openSerial_clicked()));
     //连接关闭按键
@@ -100,11 +110,76 @@ serialAssistant::serialAssistant(QWidget* parent)
     connect(ui->searchSearchportPbt, SIGNAL(clicked()), this, SLOT(searchSerialPort_clicked()));
     //连接图表打开开关
     connect(ui->runPbt, SIGNAL(clicked()), this, SLOT(runSerialDataChart_clicked()));
+    //连接图表关闭开关
+    connect(ui->stopPbt, SIGNAL(clicked()), this, SLOT(stopSerialDataChart_clicked()));
+    
 
+}
+
+void serialAssistant::stopSerialDataChart_clicked(void)
+{
+    //停止连接串口接收
+    disconnect(serialPort, SIGNAL(readyRead()), this, SLOT(serialDataChartShow()));
+    ui->recvEdit->appendPlainText("close chart");
+    //设置按键状态
+    ui->runPbt->setEnabled(true);
+    ui->stopPbt->setEnabled(false);
+}
+
+void serialAssistant::serialDataChartShow()
+{
+    //判断x轴y轴坐标是否符合需求
+    qreal curTime = serialTim.msec();
+    qreal curValue = QString(serialPort->readAll()).toInt();
+    if(curTime > xMax)
+    {
+        xMin += (curTime - xMax) + 20;
+        xMax += (curTime - xMax) + 20;
+        chartAxisX->setRange(xMin, xMax);
+    }
+    //判断y轴
+    if(curValue > yMax)
+    {
+        yMax += (curValue - yMax) + yMax;
+        chartAxisY->setRange(yMin, yMax);
+        
+    }
+    else if (curValue < yMin)
+    {
+        yMin -= (yMin - curValue) - yMin;    
+        chartAxisY->setRange(yMin, yMax);
+    }
+    //添加数据
+    lineSeries->append(curTime, curValue);
 }
 
 void serialAssistant::runSerialDataChart_clicked(void)
 {
+    //判断串口状态
+    if(serialStatus == true)
+    {
+        //串口状态为打开
+        //清空线
+        INIT_CHART_AXIS_RANGE;
+        //设置图表坐标轴范围
+        // 连接串口接收槽函数
+        connect(serialPort, SIGNAL(readyRead()), this, SLOT(serialDataChartShow()));
+        ui->recvEdit->appendPlainText("open chart");
+        //开始计时
+        serialTim.restart();
+        qDebug("open chart");
+
+        //设置按键状态
+        ui->runPbt->setEnabled(false);
+        ui->stopPbt->setEnabled(true);
+    }
+    else
+    {
+        QMessageBox::critical(this, "Warning", "Don't open serial");
+        ui->recvEdit->appendPlainText("open chart fail, please open serial");
+        qDebug("open chart fail");
+    }
+
 }
 
 void serialAssistant::openSerial_clicked(void)
@@ -176,6 +251,7 @@ void serialAssistant::openSerial_clicked(void)
         qDebug("open serial port successful");
         //设置按键状态
         PBT_OPEN_STATUS;
+        serialStatus = true;
     }
     else
     {
@@ -194,6 +270,7 @@ void serialAssistant::closeSerial_clicked(void)
     // 输出关闭串口信息
     ui->recvEdit->appendPlainText(curTime.toString() + "close serial port");
     qDebug("close serial port");
+    serialStatus = false;
 }
 void serialAssistant::clearSerial_clicked(void)
 {

@@ -550,7 +550,7 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>400</height>
+              <height>450</height>
              </size>
             </property>
             <property name="title">
@@ -583,19 +583,6 @@
               </property>
               <property name="text">
                <string>Stop</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="clearMessageChartPbt">
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Clear Message</string>
               </property>
              </widget>
             </item>

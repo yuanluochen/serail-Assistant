@@ -4,6 +4,7 @@
 #include <QSerialPort>
 #include <QChart>
 #include <QTime>
+#include <QTimer>
 #include <QValueAxis>
 #include <qlineseries.h>
 
@@ -30,6 +31,11 @@ private slots:
 
     //图表开启函数
     void runSerialDataChart_clicked(void);
+    //图表关闭
+    void stopSerialDataChart_clicked(void);
+    //连接图表清理
+    //图表数据显示
+    void serialDataChartShow(void);
 
 private:
     Ui_serialAssistant* ui;
@@ -37,6 +43,10 @@ private:
     QSerialPort* serialPort;
     //时间
     QTime curTime;
+    //定时器
+    QTime serialTim;
+    //串口状态
+    bool serialStatus;
 
     //图表
     QChart* serialDataCharts;
